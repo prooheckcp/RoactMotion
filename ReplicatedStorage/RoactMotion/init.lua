@@ -52,7 +52,6 @@ RoactMotion.createElement = function(
                     motorReference[propertyName] = motor
 
                     props[propertyName] = binding:map(function(value)
-                        print(value)
                         return value
                     end)
 
@@ -101,8 +100,24 @@ RoactMotion.createElement = function(
         })
     end
 
+    function newComponent:runCallbacks(callbacks : {()->nil})
+        for _, c in pairs(callbacks) do
+           c() 
+        end
+    end
+
     function newComponent:willUpdate(_, nextState)
-        
+        if self.state.componentState ~= nextState.componentState then
+            local nextComponentState : ComponentState.ComponentState = nextState.componentState
+
+            if nextComponentState == ComponentState.Hover then
+                self:runCallbacks(self.callbacks.whileHover) 
+            elseif nextComponentState == ComponentState.Tap then
+                self:runCallbacks(self.callbacks.whileTap)
+            elseif nextComponentState == ComponentState.None then
+                self:runCallbacks(self.callbacks._default)         
+            end
+        end
     end
 
     function newComponent:render()
