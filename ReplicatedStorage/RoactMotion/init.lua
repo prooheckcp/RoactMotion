@@ -29,6 +29,18 @@ RoactMotion.createElement = function(
 
         self.props[Roact.Children] = self.children
 
+        local bindingReference : {[string]:any} = {}
+        for eventName, targetValue in pairs(animations) do
+            if typeof(targetValue) ~= "table" then
+                continue
+            end
+
+            for propertyName, targetValue in pairs(targetValue) do
+                local bind = bindingReference[propertyName] or Roact.createBinding(props[propertyName] or 0)
+                print("Created bind")
+            end
+        end
+
         if component == "ImageButton" or component == "TextButton" then
             self.props[Roact.Event.MouseButton1Down] = function()
                 self:setState({
