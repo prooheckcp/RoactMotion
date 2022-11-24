@@ -29,14 +29,22 @@ RoactMotion.createElement = function(
 
         self.props[Roact.Children] = self.children
 
-        local bindingReference : {[string]:any} = {}
+        local bindingReference : {[string]:any} = {} --Uses property name 
         for eventName, targetValue in pairs(animations) do
             if typeof(targetValue) ~= "table" then
                 continue
             end
 
             for propertyName, targetValue in pairs(targetValue) do
-                local bind = bindingReference[propertyName] or Roact.createBinding(props[propertyName] or 0)
+                if not bindingReference[propertyName] then
+                    local initialValue : any = props[propertyName]
+                    bindingReference[propertyName] = Roact.createBinding(props[propertyName] or 0)
+                    props[propertyName] = bindingReference[propertyName]:map(function(value)
+                        print(value)
+                        return initialValue
+                    end)
+                end
+  
                 print("Created bind")
             end
         end
