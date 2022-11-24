@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Roact = require(ReplicatedStorage.Packages.roact)
 local ComponentState = require(script.enums.ComponentState)
+local Motor = require(script.classes.Motor)
 
 local RoactMotion = {}
 
@@ -29,26 +30,40 @@ RoactMotion.createElement = function(
 
         self.props[Roact.Children] = self.children
 
-        local bindingReference : {[string]:Roact.Binding} = {} --Uses property name 
+        local motorReference : {[string]:Motor.Motor} = {} --Uses property name
+        self.callbacks = {
+            whileHover = {},
+            whileTap = {},
+            _default = {},
+        }
+
+
         for eventName, targetValue in pairs(animations) do
             if typeof(targetValue) ~= "table" then
                 continue
             end
 
             for propertyName, targetValue in pairs(targetValue) do
-                if not bindingReference[propertyName] then
+                if not motorReference[propertyName] then
                     local initialValue : any = props[propertyName]
                     local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or 0)
-                    
-                    bindingReference[propertyName] = binding
+                    local motor = Motor.new(props[propertyName], updateBinding)
+
+                    motorReference[propertyName] = motor
 
                     props[propertyName] = binding:map(function(value)
                         print(value)
-                        return initialValue
+                        return value
+                    end)
+
+                    table.insert(self.callbacks._default, function()
+                        motor:Set(initialValue)
                     end)
                 end
   
-                print("Created bind")
+                table.insert(self.callbacks[eventName], function()
+                    motorReference[propertyName]:Set(targetValue)
+                end)
             end
         end
 

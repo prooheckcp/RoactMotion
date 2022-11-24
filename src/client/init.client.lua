@@ -12,7 +12,7 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
         Size = UDim2.fromOffset(100, 50),
     }, {}, {
         whileHover = {
-            Size = UDim2.fromOffset(120, 60)
+            Size = UDim2.fromOffset(300, 60)
         }
     })
 }), Players.LocalPlayer.PlayerGui, "TestGUI")

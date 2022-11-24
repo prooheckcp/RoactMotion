@@ -14,7 +14,9 @@ function Motor.new(initialValue, setBinding)
     return self
 end
 
-
+function Motor:Set(targetValue : any)
+    self.setBinding(targetValue)
+end
 
 export type Motor = typeof(Motor)
 
