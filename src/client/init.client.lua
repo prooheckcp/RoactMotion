@@ -8,6 +8,7 @@ local transition = RoactMotion.Transition.new()
 transition.duration = 0.6
 transition.easingStyle = Enum.EasingStyle.Circular
 transition.easingDirection = Enum.EasingDirection.Out
+transition.delay = 1
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {

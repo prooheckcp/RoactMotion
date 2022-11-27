@@ -73,6 +73,8 @@ function Motor:Update(deltaTime : number)
 end
 
 function Motor:Set(targetValue : any, transition : Transition.Transition)
+    if transition.delay > 0 then task.wait(transition.delay) end
+
     self.currentT = 0
     self.previousT = 0
     self.targetValue = targetValue
