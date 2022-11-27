@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Roact = require(ReplicatedStorage.Packages.roact)
 local RoactMotion = require(ReplicatedStorage.RoactMotion)
 
+print(typeof(UDim2.new()))
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {

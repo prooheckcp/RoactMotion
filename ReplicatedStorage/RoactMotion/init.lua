@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Roact = require(ReplicatedStorage.Packages.roact)
 local ComponentState = require(script.enums.ComponentState)
 local Motor = require(script.classes.Motor)
+local Transition = require(script.classes.Transition)
 
 local RoactMotion = {}
 
@@ -20,6 +21,7 @@ RoactMotion.createElement = function(
 ) : Roact.Component
 
     animations = animations or {}
+    local transition : Transition.Transition = animations.transition or Transition.new()
 
     local newComponent : Roact.Component = Roact.PureComponent:extend("AnimatedComponent")
 
@@ -27,7 +29,7 @@ RoactMotion.createElement = function(
         self.props = props
         self.children = children
         self.component = component
-
+        
         self.props[Roact.Children] = self.children
 
         local motorReference : {[string]:Motor.Motor} = {} --Uses property name
@@ -36,7 +38,6 @@ RoactMotion.createElement = function(
             whileTap = {},
             _default = {},
         }
-
 
         for eventName, targetValue in pairs(animations) do
             if typeof(targetValue) ~= "table" then
@@ -47,7 +48,7 @@ RoactMotion.createElement = function(
                 if not motorReference[propertyName] then
                     local initialValue : any = props[propertyName]
                     local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or 0)
-                    local motor = Motor.new(props[propertyName], updateBinding)
+                    local motor = Motor.new(binding, updateBinding)
 
                     motorReference[propertyName] = motor
 
@@ -56,12 +57,12 @@ RoactMotion.createElement = function(
                     end)
 
                     table.insert(self.callbacks._default, function()
-                        motor:Set(initialValue)
+                        motor:Set(initialValue, transition)
                     end)
                 end
   
                 table.insert(self.callbacks[eventName], function()
-                    motorReference[propertyName]:Set(targetValue)
+                    motorReference[propertyName]:Set(targetValue, transition)
                 end)
             end
         end
