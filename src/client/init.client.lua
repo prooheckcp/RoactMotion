@@ -13,8 +13,7 @@ local animation = RoactMotion.Animation.new({
     Size = UDim2.fromOffset(500, 500),
 })
 
-task.delay(5, function()
-    print("Started!")
+task.delay(10, function()
     animation:start()
 end)
 

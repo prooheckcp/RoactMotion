@@ -52,6 +52,20 @@ RoactMotion.createElement = function(
             end
 
             if not self.callbacks[eventName] then
+                if eventName == "animate" then
+                    for _, animation : Animation.Animation in pairs(targetValue) do
+                        for propertyName, targetValue in pairs(animation.animation) do
+                            if not motorReference[propertyName] then
+                                self:createMotor(motorReference, propertyName)
+                            end
+
+                            function animation:start()
+                                motorReference[propertyName]:Set(targetValue, animation.transition or transition)
+                            end
+                        end
+                    end   
+                end                    
+
                 continue
             end
 
