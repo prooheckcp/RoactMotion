@@ -5,7 +5,9 @@ local Roact = require(ReplicatedStorage.Packages.roact)
 local RoactMotion = require(ReplicatedStorage.RoactMotion)
 
 local transition = RoactMotion.Transition.new()
-transition.duration = 0.1
+transition.duration = 0.6
+transition.easingStyle = Enum.EasingStyle.Circular
+transition.easingDirection = Enum.EasingDirection.Out
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {
@@ -16,11 +18,11 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
     {}, 
     {
         whileHover = {
-            Size = {UDim2.fromOffset(300, 60), UDim2.fromOffset(300, 200)}
+            Size = UDim2.fromOffset(300, 60)
         },
         whileTap = {
             Size = UDim2.fromOffset(200, 55)
         },
-        --transition = transition
+        transition = transition
     })
 }), Players.LocalPlayer.PlayerGui, "TestGUI")
