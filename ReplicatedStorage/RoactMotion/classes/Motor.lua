@@ -38,8 +38,17 @@ end
 function Motor:_GetLerped(currentTarget : any, alpha : number)
     if typeof(currentTarget) == "number" then
         return lerp(self.startValue, currentTarget, alpha)
-    else
+    elseif typeof(currentTarget) == "function" then
+        return currentTarget(math.min(self.currentT - self.previousT, 1))
+    elseif 
+    typeof(currentTarget) == "Vector3" or 
+    typeof(currentTarget) == "Vector2" or 
+    typeof(currentTarget) == "UDim2" or 
+    typeof(currentTarget) == "UDim" 
+    then
         return self.startValue:Lerp(currentTarget, alpha)
+    else
+        return currentTarget
     end
 end
 
