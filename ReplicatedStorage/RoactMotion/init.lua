@@ -55,8 +55,8 @@ RoactMotion.createElement = function(
                                 self:createMotor(motorReference, propertyName)
                             end
 
-                            function animation:start()
-                                motorReference[propertyName]:Set(targetValue, animation.transition or transition)
+                            function animation:start(customTargetValue : number)
+                                motorReference[propertyName]:Set(targetValue, animation.transition or transition, customTargetValue)
                             end
                         end
                     end
