@@ -192,4 +192,7 @@ end
 RoactMotion.Transition = Transition
 RoactMotion.Animation = Animation
 
+export type Transition = typeof(Transition.new())
+export type Animation = typeof(Animation.new())
+
 return RoactMotion

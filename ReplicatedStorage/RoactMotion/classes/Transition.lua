@@ -4,6 +4,8 @@ Transition.duration = nil :: number
 Transition.easingStyle = nil :: Enum.EasingStyle
 Transition.easingDirection = nil :: Enum.EasingDirection
 Transition.delay = nil :: number
+Transition._reachedKeypointCallbacks = nil :: {}
+Transition._completedCallbacks = nil :: {}
 
 function Transition.new()
     local self = setmetatable({}, Transition)
@@ -13,6 +15,14 @@ function Transition.new()
     self.delay = 0
 
     return self
+end
+
+function Transition.reachedKeypoint:Connect(callback : (keypoint : number)->nil)
+    
+end
+
+function Transition.completed:Connect(callback : ()->nil)
+    
 end
 
 export type Transition = typeof(Transition)
