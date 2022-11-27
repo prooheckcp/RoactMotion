@@ -9,6 +9,15 @@ transition.duration = 0.6
 transition.easingStyle = Enum.EasingStyle.Circular
 transition.easingDirection = Enum.EasingDirection.Out
 
+local animation = RoactMotion.Animation.new({
+    Size = UDim2.fromOffset(500, 500),
+})
+
+task.delay(5, function()
+    print("Started!")
+    animation:start()
+end)
+
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {
         AnchorPoint = Vector2.new(0.5, 0.5),
@@ -18,11 +27,13 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
     {},
     {
         whileHover = {
-            Size = {UDim2.fromOffset(300, 60), UDim2.fromOffset(300, 200)}
+            Size = UDim2.fromOffset(300, 60),
+            Position = UDim2.fromScale(0.5, 0.45)
         },
         whileTap = {
             Size = UDim2.fromOffset(200, 30)
         },
-        transition = transition
+        transition = transition,
+        animate = {animation}
     })
 }), Players.LocalPlayer.PlayerGui, "TestGUI")

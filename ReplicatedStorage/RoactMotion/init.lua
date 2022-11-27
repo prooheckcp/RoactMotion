@@ -4,6 +4,7 @@ local Roact = require(ReplicatedStorage.Packages.roact)
 local ComponentState = require(script.enums.ComponentState)
 local Motor = require(script.classes.Motor)
 local Transition = require(script.classes.Transition)
+local Animation = require(script.classes.Animation)
 
 local RoactMotion = {}
 
@@ -22,7 +23,7 @@ RoactMotion.createElement = function(
 
     animations = animations or {}
     local transition : Transition.Transition = animations.transition or Transition.new()
-    print(transition)
+    local animate : {} = animations.animate or {}
     local newComponent : Roact.Component = Roact.PureComponent:extend("AnimatedComponent")
 
     function newComponent:init()
@@ -39,6 +40,12 @@ RoactMotion.createElement = function(
             _default = {},
         }
 
+        for _, animation in pairs(animate) do
+            function animation:play()
+                
+            end
+        end
+
         for eventName, targetValue in pairs(animations) do
             if typeof(targetValue) ~= "table" then
                 continue
@@ -50,19 +57,7 @@ RoactMotion.createElement = function(
 
             for propertyName, targetValue in pairs(targetValue) do
                 if not motorReference[propertyName] then
-                    local initialValue : any = props[propertyName]
-                    local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or 0)
-                    local motor = Motor.new(binding, updateBinding)
-
-                    motorReference[propertyName] = motor
-
-                    props[propertyName] = binding:map(function(value)
-                        return value
-                    end)
-
-                    table.insert(self.callbacks._default, function()
-                        motor:Set(initialValue, transition)
-                    end)
+                    self:createMotor(motorReference, propertyName)
                 end
 
                 table.insert(self.callbacks[eventName], function()
@@ -105,6 +100,22 @@ RoactMotion.createElement = function(
         })
     end
 
+    function newComponent:createMotor(motorReference, propertyName)
+        local initialValue : any = props[propertyName]
+        local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or 0)
+        local motor = Motor.new(binding, updateBinding)
+
+        motorReference[propertyName] = motor
+
+        props[propertyName] = binding:map(function(value)
+            return value
+        end)
+
+        table.insert(self.callbacks._default, function()
+            motor:Set(initialValue, transition)
+        end)
+    end
+
     function newComponent:runCallbacks(callbacks : {()->nil})
         for _, c in pairs(callbacks) do
            c() 
@@ -134,5 +145,6 @@ RoactMotion.createElement = function(
 end
 
 RoactMotion.Transition = Transition
+RoactMotion.Animation = Animation
 
 return RoactMotion
