@@ -10,7 +10,9 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
         AnchorPoint = Vector2.new(0.5, 0.5),
         Position = UDim2.fromScale(0.5, 0.5),
         Size = UDim2.fromOffset(100, 50),
-    }, {}, {
+    }, 
+    {}, 
+    {
         whileHover = {
             Size = UDim2.fromOffset(300, 60)
         }
