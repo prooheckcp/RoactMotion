@@ -129,4 +129,6 @@ RoactMotion.createElement = function(
     return Roact.createElement(newComponent)
 end
 
+RoactMotion.Transition = Transition
+
 return RoactMotion

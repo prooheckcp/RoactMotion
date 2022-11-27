@@ -4,7 +4,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Roact = require(ReplicatedStorage.Packages.roact)
 local RoactMotion = require(ReplicatedStorage.RoactMotion)
 
-print(typeof(UDim2.new()))
+local transition = RoactMotion.Transition.new()
+transition.duration = 0.1
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {
@@ -15,7 +16,11 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
     {}, 
     {
         whileHover = {
-            Size = UDim2.fromOffset(300, 60)
-        }
+            Size = {UDim2.fromOffset(300, 60), UDim2.fromOffset(300, 200)}
+        },
+        whileTap = {
+            Size = UDim2.fromOffset(200, 55)
+        },
+        --transition = transition
     })
 }), Players.LocalPlayer.PlayerGui, "TestGUI")

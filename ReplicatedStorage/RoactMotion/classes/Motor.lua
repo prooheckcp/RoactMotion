@@ -9,7 +9,9 @@ Motor.setBinding = nil
 Motor.renderStepped = nil :: RBXScriptSignal
 Motor.targetValue = nil :: any
 Motor.currentT = nil :: number
+Motor.previousT = nil :: number 
 Motor.transition = nil :: Transition.Transition
+Motor.startValue = nil :: any
 
 local function lerp(a, b, t)
     return a + (b - a) * t
@@ -24,30 +26,55 @@ function Motor.new(binding, setBinding)
     return self
 end
 
+function Motor:_GetTargetLimit()
+    if typeof(self.targetValue) == "table" then
+        local targetIndex : number = math.min(1 + math.floor(self.currentT), #self.targetValue)
+        return self.targetValue[targetIndex], #self.targetValue
+    else
+        return self.targetValue, 1
+    end
+end
+
+function Motor:_GetLerped(currentTarget : any, alpha : number)
+    if typeof(currentTarget) == "number" then
+        return lerp(self.startValue, currentTarget, alpha)
+    else
+        return self.startValue:Lerp(currentTarget, alpha)
+    end
+end
+
 function Motor:Update(deltaTime : number)
     local alpha : number = TweenService:GetValue(self.currentT, self.transition.easingStyle, self.transition.easingDirection)
     local currentValue : any = self.binding:getValue()
     local newValue : any = nil
 
-    if typeof(self.targetValue) == "number" then
-        newValue = lerp(currentValue, self.targetValue, alpha)
-    else
-        newValue = currentValue:Lerp(self.targetValue, alpha)
-    end
+    local currentTarget : any = nil
+    local tlimit : number = nil
+
+    currentTarget, tlimit = self:_GetTargetLimit()
+    newValue = self:_GetLerped(currentTarget, alpha)
 
     self.setBinding(newValue)
 
-    if self.currentT == 1 then
+    if self.currentT == tlimit then
         self.renderStepped:Disconnect()
     end
 
-    self.currentT += math.min(deltaTime/self.transition.duration, 1)
+    self.currentT += math.min(deltaTime/self.transition.duration, tlimit)
+
+    if self.previousT < math.floor(self.currentT) then
+        self.previousT = math.floor(self.currentT)
+        
+        self.startValue = self:_GetLerped(currentTarget, self.previousT)
+    end
 end
 
 function Motor:Set(targetValue : any, transition : Transition.Transition)
     self.currentT = 0
+    self.previousT = 0
     self.targetValue = targetValue
     self.transition = transition
+    self.startValue = self.binding:getValue()
 
     if not self.renderStepped then
         self.renderStepped = RunService.RenderStepped:Connect(function(deltaTime : number)
