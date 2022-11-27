@@ -47,10 +47,6 @@ RoactMotion.createElement = function(
         end
 
         for eventName, targetValue in pairs(animations) do
-            if typeof(targetValue) ~= "table" then
-                continue
-            end
-
             if not self.callbacks[eventName] then
                 if eventName == "animate" then
                     for _, animation : Animation.Animation in pairs(targetValue) do
@@ -63,9 +59,21 @@ RoactMotion.createElement = function(
                                 motorReference[propertyName]:Set(targetValue, animation.transition or transition)
                             end
                         end
-                    end   
+                    end
+                elseif 
+                eventName == "onHoverEnd" or
+                eventName == "onHoverStart" or
+                eventName == "onTap" or
+                eventName == "onTapStart" or
+                eventName == "onTapEnd"
+                then
+                    self.callbacks[eventName] = targetValue
                 end                    
 
+                continue
+            end
+
+            if typeof(targetValue) ~= "table" then
                 continue
             end
 
@@ -91,6 +99,10 @@ RoactMotion.createElement = function(
                 self:setState({
                     componentState = ComponentState.Hover,
                 })
+            end
+
+            self.props[Roact.Event.Activated] = self.props[Roact.Event.Activated] or function()
+                self:runCallbacks(self.callbacks.onTap)
             end
         end
 
@@ -131,18 +143,37 @@ RoactMotion.createElement = function(
     end
 
     function newComponent:runCallbacks(callbacks : {()->nil})
+        if not callbacks then
+            return
+        end
+
+        if typeof(callbacks) == "function" then
+            task.spawn(callbacks)
+            return
+        end 
+
         for _, c in pairs(callbacks) do
-           c() 
+           task.spawn(c)
         end
     end
 
     function newComponent:willUpdate(_, nextState)
-        if self.state.componentState ~= nextState.componentState then
+        local currentComponentState : ComponentState.ComponentState = self.state.componentState
+
+        if currentComponentState ~= nextState.componentState then
             local nextComponentState : ComponentState.ComponentState = nextState.componentState
 
+            if nextState.componentState == ComponentState.None then
+                self:runCallbacks(self.callbacks.onHoverEnd)
+            elseif currentComponentState == ComponentState.Tap then
+                self:runCallbacks(self.callbacks.onTapEnd)
+            end
+
             if nextComponentState == ComponentState.Hover then
+                self:runCallbacks(self.callbacks.onHoverStart)
                 self:runCallbacks(self.callbacks.whileHover) 
             elseif nextComponentState == ComponentState.Tap then
+                self:runCallbacks(self.callbacks.onTapStart)
                 self:runCallbacks(self.callbacks.whileTap)
             elseif nextComponentState == ComponentState.None then
                 self:runCallbacks(self.callbacks._default)         
