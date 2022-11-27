@@ -26,7 +26,7 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
     {
         whileHover = {
             Size = UDim2.fromOffset(300, 60),
-            Position = UDim2.fromScale(0.5, 0.45),
+            Position = UDim2.fromScale(0.5, 0.45), --SHOULD ONLY RETURN BACK CHANGED VALUES? 
         },
         whileTap = {
             Size = UDim2.fromOffset(200, 30)
