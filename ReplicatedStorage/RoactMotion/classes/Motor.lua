@@ -58,6 +58,7 @@ function Motor:Update(deltaTime : number)
     self.setBinding(newValue)
 
     if self.currentT == tlimit then
+        self.transition.completed:Fire()
         self.renderStepped:Disconnect()
         self.renderStepped = nil
         return
@@ -68,6 +69,7 @@ function Motor:Update(deltaTime : number)
 
     if self.previousT < math.floor(self.currentT) and self.previousT + 1 < tlimit then
         self.previousT = math.floor(self.currentT)
+        self.transition.reachedKeypoint:Fire(self.previousT)
         self.startValue = self:_GetLerped(currentTarget, self.previousT)
     end
 end

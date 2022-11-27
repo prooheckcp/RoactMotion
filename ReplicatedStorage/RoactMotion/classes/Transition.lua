@@ -1,11 +1,13 @@
+local Event = require(script.Parent.Event)
+
 local Transition = {}
 Transition.__index = Transition
 Transition.duration = nil :: number
 Transition.easingStyle = nil :: Enum.EasingStyle
 Transition.easingDirection = nil :: Enum.EasingDirection
 Transition.delay = nil :: number
-Transition._reachedKeypointCallbacks = nil :: {}
-Transition._completedCallbacks = nil :: {}
+Transition.reachedKeypoint = nil :: RBXScriptSignal
+Transition.completed = nil :: RBXScriptSignal
 
 function Transition.new()
     local self = setmetatable({}, Transition)
@@ -13,16 +15,10 @@ function Transition.new()
     self.easingStyle = Enum.EasingStyle.Linear
     self.easingDirection = Enum.EasingDirection.InOut
     self.delay = 0
+    self.reachedKeypoint = Event.new()
+    self.completed = Event.new()
 
     return self
-end
-
-function Transition.reachedKeypoint:Connect(callback : (keypoint : number)->nil)
-    
-end
-
-function Transition.completed:Connect(callback : ()->nil)
-    
 end
 
 export type Transition = typeof(Transition)
