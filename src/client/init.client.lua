@@ -15,13 +15,13 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
         Position = UDim2.fromScale(0.5, 0.5),
         Size = UDim2.fromOffset(100, 50),
     }, 
-    {}, 
+    {},
     {
         whileHover = {
-            Size = UDim2.fromOffset(300, 60)
+            Size = {UDim2.fromOffset(300, 60), UDim2.fromOffset(300, 200)}
         },
         whileTap = {
-            Size = UDim2.fromOffset(200, 55)
+            Size = UDim2.fromOffset(200, 30)
         },
         transition = transition
     })
