@@ -52,7 +52,7 @@ RoactMotion.createElement = function(
                     for _, animation : Animation.Animation in pairs(targetValue) do
                         for propertyName, targetValue in pairs(animation.animation) do
                             if not motorReference[propertyName] then
-                                self:createMotor(motorReference, propertyName)
+                                self:createMotor(motorReference, propertyName, false)
                             end
 
                             function animation:start(customTargetValue : number)
@@ -79,7 +79,7 @@ RoactMotion.createElement = function(
 
             for propertyName, targetValue in pairs(targetValue) do
                 if not motorReference[propertyName] then
-                    self:createMotor(motorReference, propertyName)
+                    self:createMotor(motorReference, propertyName, true)
                 end
 
                 table.insert(self.callbacks[eventName], function()
@@ -126,7 +126,7 @@ RoactMotion.createElement = function(
         })
     end
 
-    function newComponent:createMotor(motorReference, propertyName)
+    function newComponent:createMotor(motorReference : Motor.Motor, propertyName : string, shouldReset : boolean)
         local initialValue : any = props[propertyName]
         local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or 0)
         local motor = Motor.new(binding, updateBinding)
@@ -136,6 +136,10 @@ RoactMotion.createElement = function(
         props[propertyName] = binding:map(function(value)
             return value
         end)
+
+        if not shouldReset then
+            return
+        end
 
         table.insert(self.callbacks._default, function()
             motor:Set(initialValue, transition)
