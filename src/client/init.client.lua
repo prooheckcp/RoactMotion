@@ -12,8 +12,16 @@ transition.easingDirection = Enum.EasingDirection.Out
 local animation : RoactMotion.Animation = RoactMotion.Animation.new({
     Text = function(_, x)
         return "Current count: "..math.floor(x)
-    end
+    end,
+    Size = UDim2.fromScale(0.5, 0.5)
 }, transition)
+--[[
+.completed:Connect(function()
+    print("SIIIIIIIU")
+end)
+
+]]
+
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {
