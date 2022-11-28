@@ -15,6 +15,11 @@ local animation : RoactMotion.Animation = RoactMotion.Animation.new({
     end,
     Size = UDim2.fromScale(0.5, 0.5)
 }, transition)
+
+animation.completed:Connect(function()
+    print("SIIIU")
+end)
+
 --[[
 .completed:Connect(function()
     print("SIIIIIIIU")

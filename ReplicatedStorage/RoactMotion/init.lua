@@ -59,11 +59,13 @@ RoactMotion.createElement = function(
 
                             targetMotors[propertyName] = targetValue
                         end
-
+                        
                         function animation:start(customTargetValue : number)
                             for propertyName : string, targetValue : any in pairs(targetMotors) do
                                 motorReference[propertyName]:Set(targetValue, animation.transition or transition, customTargetValue)
-                            end          
+                            end
+                            task.wait(animation.transition.duration)
+                            animation.completed:Fire()
                         end
                     end
                 elseif 
