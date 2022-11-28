@@ -1,8 +1,14 @@
 [package]
 name = "prooheckcp/roactmotion"
-version = "0.1.0"
+description = "A simple library inspired by Framer Motion and Flipper that allows you to easily animate Roact UI. It supports events such as hovering and pressing on buttons. Developed by @prooheckcp"
+version = "1.0.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
-
+exclude = [
+	"docs", ".moonwave", "test",
+	"Janitor.rbxm", "Janitor.rbxmx", "BuildJanitor.lua",
+	"changelog.md", "README.md", ".styluaignore", ".gitignore",
+	"foreman.toml", "Luau.toml", "moonwave.toml", "rotriever.toml", "selene.toml", "stylua.toml", "testez-companion.toml", "testez.toml"
+]
 [dependencies]
 roact = "roblox/roact@1.4.4"
