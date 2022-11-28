@@ -21,6 +21,12 @@ function Animation:start(targetValue : number)
     
 end
 
+function Animation:andThen(callBack : ()->nil)
+    self.completed:Connect(callBack)
+    
+    return self
+end
+
 export type Animation = typeof(Animation)
 
 return Animation

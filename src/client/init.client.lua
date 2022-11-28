@@ -14,19 +14,9 @@ local animation : RoactMotion.Animation = RoactMotion.Animation.new({
         return "Current count: "..math.floor(x)
     end,
     Size = UDim2.fromScale(0.5, 0.5)
-}, transition)
-
-animation.completed:Connect(function()
-    print("SIIIU")
+}, transition):andThen(function()
+    print("I was called after!")
 end)
-
---[[
-.completed:Connect(function()
-    print("SIIIIIIIU")
-end)
-
-]]
-
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {
