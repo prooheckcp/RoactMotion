@@ -51,7 +51,8 @@ function Motor:_GetLerped(currentTarget : any, alpha : number)
     typeof(currentTarget) == "Vector3" or 
     typeof(currentTarget) == "Vector2" or 
     typeof(currentTarget) == "UDim2" or 
-    typeof(currentTarget) == "UDim" 
+    typeof(currentTarget) == "UDim" or
+    typeof(currentTarget) == "Color3"
     then
         return self.startValue:Lerp(currentTarget, alpha)
     else

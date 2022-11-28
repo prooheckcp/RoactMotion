@@ -1,29 +1,24 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Roact = require(ReplicatedStorage.Packages.roact)
+local Roact = nil
 local ComponentState = require(script.enums.ComponentState)
 local Motor = require(script.classes.Motor)
 local Transition = require(script.classes.Transition)
 local Animation = require(script.classes.Animation)
+local Event = require(script.enums.Event)
 
 local RoactMotion = {}
-
-export type Animations = {
-    whileHover : ()->nil,
-    onHoverEnd : ()->nil,
-    onHoverEnd : ()->nil,
-}
 
 RoactMotion.createElement = function(
     component: string | Roact.Component | ((props: table) -> Roact.Element), 
     props: table?, 
     children: {[string | number]: Roact.Element}?,
-    animations : Animations
+    animations : {}
 ) : Roact.Component
+    if animations then
+        assert(typeof(animations) == "table", "The fourth argument must be an animation instructions map!")
+    end
 
     animations = animations or {}
     local transition : Transition.Transition = animations.transition or Transition.new()
-    local animate : {} = animations.animate or {}
     local newComponent : Roact.Component = Roact.PureComponent:extend("AnimatedComponent")
 
     function newComponent:init()
@@ -40,44 +35,11 @@ RoactMotion.createElement = function(
             _default = {},
         }
 
-        for _, animation in pairs(animate) do
-            function animation:play()
-                
-            end
-        end
-
-        for eventName, targetValue in pairs(animations) do
+        for eventName : string | Event.Event, targetValue : any in pairs(animations) do
             if not self.callbacks[eventName] then
                 if eventName == "animate" then
-                    for _, animation : Animation.Animation in pairs(targetValue) do
-                        local targetMotors = {}
-
-                        for propertyName : string, targetValue : any in pairs(animation.animation) do
-                            if not motorReference[propertyName] then
-                                self:createMotor(motorReference, propertyName, false)
-                            end
-
-                            targetMotors[propertyName] = targetValue
-                        end
-                        
-                        function animation:start(customTargetValue : number)
-                            for propertyName : string, targetValue : any in pairs(targetMotors) do
-                                motorReference[propertyName]:Set(targetValue, animation.transition or transition, customTargetValue)
-                            end
-                            
-                            task.spawn(function()
-                                task.wait(animation.transition.duration)
-                                animation.completed:Fire()                                
-                            end)
-                        end
-                    end
-                elseif 
-                eventName == "onHoverEnd" or
-                eventName == "onHoverStart" or
-                eventName == "onTap" or
-                eventName == "onTapStart" or
-                eventName == "onTapEnd"
-                then
+                    self:loadAnimate(targetValue, motorReference)
+                elseif Event[eventName] then
                     self.callbacks[eventName] = targetValue
                 end                    
 
@@ -88,7 +50,7 @@ RoactMotion.createElement = function(
                 continue
             end
 
-            for propertyName, targetValue in pairs(targetValue) do
+            for propertyName : string, targetValue : any in pairs(targetValue) do
                 if not motorReference[propertyName] then
                     self:createMotor(motorReference, propertyName, true)
                 end
@@ -101,15 +63,11 @@ RoactMotion.createElement = function(
 
         if component == "ImageButton" or component == "TextButton" then
             self.props[Roact.Event.MouseButton1Down] = function()
-                self:setState({
-                    componentState = ComponentState.Tap,
-                })
+                self:setState({componentState = ComponentState.Tap})
             end
 
             self.props[Roact.Event.MouseButton1Up] = function()
-                self:setState({
-                    componentState = ComponentState.Hover,
-                })
+                self:setState({componentState = ComponentState.Hover})
             end
 
             self.props[Roact.Event.Activated] = self.props[Roact.Event.Activated] or function()
@@ -118,23 +76,39 @@ RoactMotion.createElement = function(
         end
 
         self.props[Roact.Event.MouseEnter] = function()
-            self:setState({
-                isHovering = true,
-                componentState = ComponentState.Hover
-            })    
+            self:setState({componentState = ComponentState.Hover})
         end
 
         self.props[Roact.Event.MouseLeave] = function()
-            self:setState({
-                isHovering = false,
-                componentState = ComponentState.None
-            })
+            self:setState({componentState = ComponentState.None})
         end            
 
-        self:setState({
-            componentState = ComponentState.None,
-            isHovering = false
-        })
+        self:setState({componentState = ComponentState.None})
+    end
+
+    function newComponent:loadAnimate(animations : {Animation.Animation}, motorReference : {[string]:Motor.Motor})
+        for _, animation : Animation.Animation in pairs(animations) do
+            local targetMotors = {}
+
+            for propertyName : string, targetValue : any in pairs(animation.animation) do
+                if not motorReference[propertyName] then
+                    self:createMotor(motorReference, propertyName, false)
+                end
+
+                targetMotors[propertyName] = targetValue
+            end
+            
+            function animation:start(customTargetValue : number)
+                for propertyName : string, targetValue : any in pairs(targetMotors) do
+                    motorReference[propertyName]:Set(targetValue, animation.transition or transition, customTargetValue)
+                end
+
+                task.spawn(function()
+                    task.wait(animation.transition.duration)
+                    animation.completed:Fire()                                
+                end)
+            end
+        end        
     end
 
     function newComponent:createMotor(motorReference : Motor.Motor, propertyName : string, shouldReset : boolean)
@@ -200,14 +174,18 @@ RoactMotion.createElement = function(
         return Roact.createElement(self.component, self.props)
     end
 
-
     return Roact.createElement(newComponent)
 end
 
 RoactMotion.Transition = Transition
 RoactMotion.Animation = Animation
+RoactMotion.Event = Event
 
 export type Transition = typeof(Transition.new())
 export type Animation = typeof(Animation.new())
 
-return RoactMotion
+return function (roact)
+    assert(typeof(roact) == "table" and roact.createElement ~= nil, "You should give a Roact reference to RoactMotion!")
+    Roact = roact
+    return RoactMotion
+end
