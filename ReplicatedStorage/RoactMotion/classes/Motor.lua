@@ -1,5 +1,6 @@
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+
 local Transition = require(script.Parent.Transition)
 
 local Motor = {}
@@ -14,7 +15,7 @@ Motor.transition = nil :: Transition.Transition
 Motor.startValue = nil :: any
 Motor.customTargetValue = nil :: number
 
-local function lerp(a, b, t)
+local function lerp(a : number, b : number, t : number) : number
     return a + (b - a) * t
 end
 
@@ -27,7 +28,7 @@ function Motor.new(binding, setBinding)
     return self
 end
 
-function Motor:_GetTargetLimit()
+function Motor:_GetTargetLimit() : (number, number)
     if typeof(self.targetValue) == "table" then
         local targetIndex : number = math.min(1 + math.floor(self.currentT), #self.targetValue)
         return self.targetValue[targetIndex], #self.targetValue
@@ -36,7 +37,7 @@ function Motor:_GetTargetLimit()
     end
 end
 
-function Motor:_GetLerped(currentTarget : any, alpha : number)
+function Motor:_GetLerped(currentTarget : any, alpha : number) : number
     if typeof(currentTarget) == "number" then
         return lerp(self.startValue, currentTarget, alpha)
     elseif typeof(currentTarget) == "function" then
@@ -60,7 +61,7 @@ function Motor:_GetLerped(currentTarget : any, alpha : number)
     end
 end
 
-function Motor:Update(deltaTime : number)
+function Motor:Update(deltaTime : number) : nil
     local targetAlpha : number = math.min(self.currentT - self.previousT, 1)
 
     local alpha : number = TweenService:GetValue(targetAlpha, self.transition.easingStyle, self.transition.easingDirection)
@@ -91,7 +92,7 @@ function Motor:Update(deltaTime : number)
     end
 end
 
-function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number)
+function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number) : nil
     if transition.delay > 0 then task.wait(transition.delay) end
 
     self.currentT = 0
