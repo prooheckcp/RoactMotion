@@ -64,7 +64,6 @@ end
 
 function Motor:Update(deltaTime : number) : nil
     local targetAlpha : number = math.min(self.currentT - self.previousT, 1)
-
     local alpha : number = TweenService:GetValue(targetAlpha, self.transition.easingStyle, self.transition.easingDirection)
     local newValue : any = nil
 
@@ -89,7 +88,7 @@ function Motor:Update(deltaTime : number) : nil
     if self.previousT < math.floor(self.currentT) and self.previousT + 1 < tlimit then
         self.previousT = math.floor(self.currentT)
         self.transition.reachedKeypoint:Fire(self.previousT)
-        self.startValue = self:_GetLerped(currentTarget, self.previousT)
+        self.startValue = self:_GetLerped(currentTarget, alpha)
     end
 end
 

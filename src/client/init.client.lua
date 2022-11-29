@@ -6,16 +6,13 @@ local RoactMotion = require(ReplicatedStorage.RoactMotion)(Roact)
 
 local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.6
-transition.easingStyle = Enum.EasingStyle.Circular
-transition.easingDirection = Enum.EasingDirection.Out
+transition.easingStyle = Enum.EasingStyle.Linear
+transition.easingDirection = Enum.EasingDirection.InOut
 
 local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Text = function(_, x, y)
-        return y.."Current count: "..math.floor(x)
-    end,
-    Size = UDim2.fromScale(0.5, 0.5)
+    Size = {UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.2, 0.2), UDim2.fromScale(0.5, 0.5)}
 }, transition):andThen(function()
-    print("I was called after!")
+ 
 end)
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
@@ -27,6 +24,10 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
     }, 
     {},
     {
+        [RoactMotion.Event.onTap] = function()
+            animation:start(5, "SIIIU")
+        end,           
+        --[[
         [RoactMotion.Event.whileHover] = {
             Size = UDim2.fromOffset(300, 60),
             Position = UDim2.fromScale(0.5, 0.45),
@@ -36,9 +37,9 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
             Size = UDim2.fromOffset(200, 30)
         },
 
-        [RoactMotion.Event.onTap] = function()
-            animation:start(5, "SIIIU")
-        end,
+         
+        ]]
+
         transition = transition,
         animate = {animation}
     })
