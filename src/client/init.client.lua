@@ -10,17 +10,8 @@ transition.easingStyle = Enum.EasingStyle.Circular
 transition.easingDirection = Enum.EasingDirection.Out
 
 local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Text = function(_, x)
-        return "Current count: "..math.floor(x)
-    end,
-    Size = UDim2.fromScale(0.5, 0.5)
-}, transition):andThen(function()
-    print("I was called after!")
-end)
-
-local animation2 : RoactMotion.Animation = RoactMotion.Animation.new({
-    Text = function(_, x)
-        return "Current count: "..math.floor(-x)
+    Text = function(_, x, y)
+        return y.."Current count: "..math.floor(x)
     end,
     Size = UDim2.fromScale(0.5, 0.5)
 }, transition):andThen(function()
@@ -46,9 +37,9 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
         },
 
         [RoactMotion.Event.onTap] = function()
-            animation:start(5)
+            animation:start(5, "SIIIU")
         end,
         transition = transition,
-        animate = {animation, animation2}
+        animate = {animation}
     })
 }), Players.LocalPlayer.PlayerGui, "TestGUI")

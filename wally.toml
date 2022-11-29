@@ -4,7 +4,5 @@ description = "A simple library inspired by Framer Motion and Flipper that allow
 version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
-include = ["ReplicatedStorage", "default.project.json", "LICENSE"]
-
-[dependencies]
-roact = "roblox/roact@1.4.4"
+exclude = ["**"]
+include = ["ReplicatedStorage", "default.project.json", "wally.toml"]

@@ -14,6 +14,7 @@ Motor.previousT = nil :: number
 Motor.transition = nil :: Transition.Transition
 Motor.startValue = nil :: any
 Motor.customTargetValue = nil :: number
+Motor.customValue = nil :: any
 
 local function lerp(a : number, b : number, t : number) : number
     return a + (b - a) * t
@@ -47,7 +48,7 @@ function Motor:_GetLerped(currentTarget : any, alpha : number) : number
             finalCustom = self.customTargetValue * self.currentT    
         end
 
-        return currentTarget(math.min(self.currentT - self.previousT, 1), finalCustom)
+        return currentTarget(math.min(self.currentT - self.previousT, 1), finalCustom, self.customValue)
     elseif 
     typeof(currentTarget) == "Vector3" or 
     typeof(currentTarget) == "Vector2" or 
@@ -92,7 +93,7 @@ function Motor:Update(deltaTime : number) : nil
     end
 end
 
-function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number) : nil
+function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number, customValue : any) : nil
     if transition.delay > 0 then task.wait(transition.delay) end
 
     self.currentT = 0
@@ -101,6 +102,7 @@ function Motor:Set(targetValue : any, transition : Transition.Transition, custom
     self.transition = transition
     self.startValue = self.binding:getValue()
     self.customTargetValue = customTargetValue
+    self.customValue = customValue
 
     if not self.renderStepped then
         self.renderStepped = RunService.RenderStepped:Connect(function(deltaTime : number)
