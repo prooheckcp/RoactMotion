@@ -99,12 +99,20 @@ RoactMotion.createElement = function(
             end
             
             function animation:start(customTargetValue : number, customParams : any)
+                local length : number = 1
                 for propertyName : string, targetValue : any in pairs(targetMotors) do
+                    if 
+                    typeof(targetValue) == "table" and
+                    #targetValue > length 
+                    then
+                        length = #targetValue
+                    end
+
                     motorReference[propertyName]:Set(targetValue, animation.transition or transition, customTargetValue, customParams)
                 end
 
                 task.spawn(function()
-                    task.wait(animation.transition.duration)
+                    task.wait(animation.transition.duration * length)
                     animation.completed:Fire()                                
                 end)
             end

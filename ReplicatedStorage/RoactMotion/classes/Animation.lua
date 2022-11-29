@@ -17,7 +17,7 @@ function Animation.new(animation, transition : Transition.Transition)
     return self
 end
 
-function Animation:start(targetValue : number)
+function Animation:start(targetValue : number, customValue : number)
     
 end
 
