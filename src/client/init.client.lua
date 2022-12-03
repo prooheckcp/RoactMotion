@@ -10,7 +10,11 @@ transition.easingStyle = Enum.EasingStyle.Linear
 transition.easingDirection = Enum.EasingDirection.InOut
 
 local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Size = {UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.2, 0.2), UDim2.fromScale(0.5, 0.5)}
+    Size = {UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.2, 0.2), UDim2.fromScale(0.5, 0.5)},
+    Text = function(x, y, custom )
+        print(math.floor(y))
+        return "Current count : "
+    end
 }, transition):andThen(function()
     print("Finished")
 end)
@@ -25,7 +29,7 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
     {},
     {
         [RoactMotion.Event.onTap] = function()
-            animation:start(5, "SIIIU")
+            animation:start(-5, "SIIIU")
         end,           
         [RoactMotion.Event.whileHover] = {
             Size = UDim2.fromOffset(300, 60),
