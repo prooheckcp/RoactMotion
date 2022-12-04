@@ -14,7 +14,10 @@ Motor.previousT = nil :: number
 Motor.transition = nil :: Transition.Transition
 Motor.startValue = nil :: any
 Motor.customTargetValue = nil :: number
+Motor.repeatCount = nil :: number
+Motor.reversed = nil :: boolean
 Motor.customValue = nil :: any
+Motor.initialValue = nil :: any
 
 local function lerp(a : number, b : number, t : number) : number
     return a + (b - a) * t
@@ -63,7 +66,7 @@ function Motor:_GetLerped(currentTarget : any, alpha : number) : number
 end
 
 function Motor:Update(deltaTime : number) : nil
-    local targetAlpha : number = math.min(self.currentT - self.previousT, 1)
+    local targetAlpha : number = math.clamp(self.currentT - self.previousT, 0, 1)
     local alpha : number = TweenService:GetValue(targetAlpha, self.transition.easingStyle, self.transition.easingDirection)
     local newValue : any = nil
 
@@ -74,32 +77,78 @@ function Motor:Update(deltaTime : number) : nil
     newValue = self:_GetLerped(currentTarget, alpha)
 
     self.setBinding(newValue)
+    
+    if self.currentT == tlimit or (self.reversed and self.currentT == 0) then
+ 
+        if 
+        not self.transition.reverses or
+        (self.reversed and self.currentT == 0)
+        then
+            self.repeatCount += 1
+        end
+            
 
-    if self.currentT == tlimit then
-        self.transition.completed:Fire()
-        self.renderStepped:Disconnect()
-        self.renderStepped = nil
+        if self.transition.repeatCount == self.repeatCount then
+            print("leave")
+            self:Stop()
+            
+        else
+            print("Reset")
+            self:Reset()
+
+        end
+
         return
     end
 
-    self.currentT += deltaTime/self.transition.duration
-    self.currentT = math.min(self.currentT, tlimit)
+    local movingAmount : number = deltaTime/self.transition.duration
 
-    if self.previousT < math.floor(self.currentT) and self.previousT + 1 < tlimit then
-        self.previousT = math.floor(self.currentT)
-        self.transition.reachedKeypoint:Fire(self.previousT)
-        self.startValue = self:_GetLerped(currentTarget, alpha)
+    if self.reversed then
+        self.currentT -= movingAmount
+    else
+        self.currentT += movingAmount
     end
+    
+    self.currentT = math.clamp(self.currentT, 0, tlimit)
+
+    if not self.reversed then
+        local currentKey : number = math.floor(self.currentT)
+
+        if 
+        currentKey > self.previousT and
+        self.previousT + 1 < tlimit 
+        then
+            self.previousT = currentKey
+            self.transition.reachedKeypoint:Fire(self.previousT)
+            self.startValue = self:_GetLerped(currentTarget, alpha)            
+        end
+    else
+
+    end
+end
+
+function Motor:Stop()
+    self.transition.completed:Fire()
+    self.renderStepped:Disconnect()
+    self.renderStepped = nil    
+end
+
+function Motor:Reset()
+    self.currentT = 0
+    self.previousT = 0
+    self.startValue = self.initialValue
 end
 
 function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number, customValue : any) : nil
     if transition.delay > 0 then task.wait(transition.delay) end
 
-    self.currentT = 0
-    self.previousT = 0
+    self.repeatCount = 0
+    self.reversed = false
+    self:Reset()
     self.targetValue = targetValue
     self.transition = transition
     self.startValue = self.binding:getValue()
+    self.initialValue = self.startValue
     self.customTargetValue = customTargetValue
     self.customValue = customValue
 
