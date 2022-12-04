@@ -110,8 +110,6 @@ function Motor:Update(deltaTime : number) : nil
  
     local currentKey : number = math.floor(self.currentT)
 
-    print(self.previousT, ":", self.startValue)
-
     if not self.reversed then
         if 
         currentKey > self.previousT and

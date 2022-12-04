@@ -7,7 +7,7 @@ Animation.animation = nil
 Animation.transition = nil :: Transition.Transition
 Animation.completed = nil :: Event.Event
 
-function Animation.new(animation, transition : Transition.Transition)
+function Animation.new(animation : {}, transition : Transition.Transition?)
     local self = setmetatable({}, Animation)
     
     self.animation = animation or {}
@@ -17,7 +17,7 @@ function Animation.new(animation, transition : Transition.Transition)
     return self
 end
 
-function Animation:start(targetValue : number, customValue : number)
+function Animation:play(targetValue : number, customValue : number)
     
 end
 

@@ -4,6 +4,7 @@ local Motor = require(script.classes.Motor)
 local Transition = require(script.classes.Transition)
 local Animation = require(script.classes.Animation)
 local Event = require(script.enums.Event)
+local Controller = require(script.classes.Controller)
 
 local RoactMotion = {}
 
@@ -35,10 +36,18 @@ RoactMotion.createElement = function(
             _default = {},
         }
 
+        self.motorReference = motorReference
+
+        local super = self
+
         for eventName : string | Event.Event, targetValue : any in pairs(animations) do
             if not self.callbacks[eventName] then
                 if eventName == "animate" then
                     self:loadAnimate(targetValue, motorReference)
+                elseif eventName == "controller" then
+                    function targetValue:play(animations : {}, transition : Transition.Transition?)
+                        super:playAnimation(animations, transition)
+                    end
                 elseif Event[eventName] then
                     self.callbacks[eventName] = targetValue
                 end                    
@@ -86,6 +95,17 @@ RoactMotion.createElement = function(
         self:setState({componentState = ComponentState.None})
     end
 
+    function newComponent:playAnimation(animations : {}, customTransition : Transition.Transition)
+        for propertyName : string, targetValue : any in pairs(animations) do
+            if not self.motorReference[propertyName] then
+                self:createMotor(self.motorReference, propertyName, false)
+            end
+
+            print(self)
+            self.motorReference[propertyName]:Set(targetValue, customTransition or transition)
+        end
+    end
+
     function newComponent:loadAnimate(animations : {Animation.Animation}, motorReference : {[string]:Motor.Motor})
         for _, animation : Animation.Animation in pairs(animations) do
             local targetMotors = {}
@@ -98,7 +118,7 @@ RoactMotion.createElement = function(
                 targetMotors[propertyName] = targetValue
             end
             
-            function animation:start(customTargetValue : number, customParams : any)
+            function animation:play(customTargetValue : number, customParams : any)
                 local length : number = 1
                 for propertyName : string, targetValue : any in pairs(targetMotors) do
                     if 
@@ -188,9 +208,11 @@ end
 RoactMotion.Transition = Transition
 RoactMotion.Animation = Animation
 RoactMotion.Event = Event
+RoactMotion.Controller = Controller
 
 export type Transition = typeof(Transition.new())
 export type Animation = typeof(Animation.new())
+export type Controller = typeof(Controller.new())
 
 return function (roact)
     assert(typeof(roact) == "table" and roact.createElement ~= nil, "You should give a Roact reference to RoactMotion!")
