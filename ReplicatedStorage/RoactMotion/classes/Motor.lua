@@ -131,9 +131,13 @@ end
 function Motor:ReachedKeyPoint(keyPoint : number, currentTarget : any, alpha : number)
     self.previousT = keyPoint
     self.transition.reachedKeypoint:Fire(self.previousT)
-    
+
     if self.reversed then
-        self.startValue = self.cachedStartValues[keyPoint]
+        if self.cachedStartValues[keyPoint] then
+            self.startValue = self.cachedStartValues[keyPoint]
+        else
+            self.startValue = self.initialValue
+        end
     else
         self.startValue = self:_GetLerped(currentTarget, alpha)
     end
