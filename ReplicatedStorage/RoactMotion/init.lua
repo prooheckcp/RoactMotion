@@ -38,15 +38,14 @@ RoactMotion.createElement = function(
 
         self.motorReference = motorReference
 
-        local super = self
-
         for eventName : string | Event.Event, targetValue : any in pairs(animations) do
             if not self.callbacks[eventName] then
                 if eventName == "animate" then
                     self:loadAnimate(targetValue, motorReference)
                 elseif eventName == "controller" then
-                    function targetValue:play(animations : {}, transition : Transition.Transition?)
-                        super:playAnimation(animations, transition)
+                    function targetValue.play(_, animations : {}, transition : Transition.Transition?)
+                        print(animations)
+                        self:playAnimation(animations, transition)
                     end
                 elseif Event[eventName] then
                     self.callbacks[eventName] = targetValue
@@ -61,7 +60,7 @@ RoactMotion.createElement = function(
 
             for propertyName : string, targetValue : any in pairs(targetValue) do
                 if not motorReference[propertyName] then
-                    self:createMotor(motorReference, propertyName, true)
+                    self:createMotor(propertyName, true)
                 end
 
                 table.insert(self.callbacks[eventName], function()
@@ -98,10 +97,9 @@ RoactMotion.createElement = function(
     function newComponent:playAnimation(animations : {}, customTransition : Transition.Transition)
         for propertyName : string, targetValue : any in pairs(animations) do
             if not self.motorReference[propertyName] then
-                self:createMotor(self.motorReference, propertyName, false)
+                self:createMotor(propertyName, false)
             end
 
-            print(self)
             self.motorReference[propertyName]:Set(targetValue, customTransition or transition)
         end
     end
@@ -112,7 +110,7 @@ RoactMotion.createElement = function(
 
             for propertyName : string, targetValue : any in pairs(animation.animation) do
                 if not motorReference[propertyName] then
-                    self:createMotor(motorReference, propertyName, false)
+                    self:createMotor(propertyName, false)
                 end
 
                 targetMotors[propertyName] = targetValue
@@ -139,12 +137,12 @@ RoactMotion.createElement = function(
         end        
     end
 
-    function newComponent:createMotor(motorReference : Motor.Motor, propertyName : string, shouldReset : boolean)
+    function newComponent:createMotor(propertyName : string, shouldReset : boolean)
         local initialValue : any = props[propertyName]
-        local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or 0)
+        local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or Instance.new(component)[propertyName])
         local motor = Motor.new(binding, updateBinding)
 
-        motorReference[propertyName] = motor
+        self.motorReference[propertyName] = motor
 
         props[propertyName] = binding:map(function(value)
             return value
