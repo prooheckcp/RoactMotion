@@ -8,7 +8,7 @@ local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.6
 transition.easingStyle = Enum.EasingStyle.Linear
 transition.easingDirection = Enum.EasingDirection.InOut
-transition.repeatCount = 1
+transition.repeatCount = 2
 transition.reverses = true
 
 local animation : RoactMotion.Animation = RoactMotion.Animation.new({
