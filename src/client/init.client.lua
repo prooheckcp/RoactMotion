@@ -12,10 +12,6 @@ transition.repeatCount = 1
 
 local controller : RoactMotion.Controller = RoactMotion.Controller.new()
 
-local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Size = {UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.3, 0.3), UDim2.fromScale(0.1, 0.3), UDim2.fromScale(0.1, 0.1)}
-}, transition)
-
 Roact.mount(Roact.createElement("ScreenGui", {}, {
     RoactMotion.createElement("TextButton", {
         AnchorPoint = Vector2.new(0.5, 0.5),
@@ -23,13 +19,13 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
         Size = UDim2.fromOffset(100, 50),
         Text = "Current count : 1",
         BackgroundTransparency = 0,
-        BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     }, 
-    {},
+    nil,
     {
         [RoactMotion.Event.onTap] = function()
             controller:play({
-                BackgroundTransparency = 1
+                BackgroundTransparency = 1,
+                BackgroundColor3 = Color3.fromRGB(150, 0, 0)
             }, transition)
         end,
  
@@ -38,14 +34,12 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
             Position = UDim2.fromScale(0.5, 0.475),
             AnchorPoint = Vector2.new(0.5, 0),
             BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-            --BackgroundTransparency = 0.5
         },
         [RoactMotion.Event.whileTap] = {
             Size = UDim2.fromOffset(200, 50),
         },
 
         transition = transition,
-        animate = {animation},
         controller = controller
     })
 }), Players.LocalPlayer.PlayerGui, "TestGUI")

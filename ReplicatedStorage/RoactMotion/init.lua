@@ -155,7 +155,7 @@ RoactMotion.createElement = function(
 
         local propsState = self.state.props or self.propsState
         local initialValue : any = propsState[propertyName] or Instance.new(component)[propertyName]
-        
+
         local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(initialValue)
         local motor = Motor.new(binding, updateBinding)
 
@@ -223,7 +223,7 @@ RoactMotion.createElement = function(
 
     function newComponent:render()
         local propsState = self.state.props
-        print(propsState)
+
         return Roact.createElement(self.component, propsState)
     end
 
