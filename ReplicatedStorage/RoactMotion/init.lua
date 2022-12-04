@@ -23,11 +23,16 @@ RoactMotion.createElement = function(
     local newComponent : Roact.Component = Roact.PureComponent:extend("AnimatedComponent")
 
     function newComponent:init()
-        self.props = props
         self.children = children
         self.component = component
         
-        self.props[Roact.Children] = self.children
+        local propsState = {}
+        self.propsState = propsState
+        for propertyName : string, propertyValue : any in pairs(props) do
+            propsState[propertyName] = propertyValue
+        end
+
+        propsState[Roact.Children] = self.children
 
         local motorReference : {[string]:Motor.Motor} = {} --Uses property name
         self.callbacks = {
@@ -44,7 +49,6 @@ RoactMotion.createElement = function(
                     self:loadAnimate(targetValue, motorReference)
                 elseif eventName == "controller" then
                     function targetValue.play(_, animations : {}, transition : Transition.Transition?)
-                        print(animations)
                         self:playAnimation(animations, transition)
                     end
                 elseif Event[eventName] then
@@ -70,28 +74,35 @@ RoactMotion.createElement = function(
         end
 
         if component == "ImageButton" or component == "TextButton" then
-            self.props[Roact.Event.MouseButton1Down] = function()
+            propsState[Roact.Event.MouseButton1Down] = function()
                 self:setState({componentState = ComponentState.Tap})
             end
 
-            self.props[Roact.Event.MouseButton1Up] = function()
+            propsState[Roact.Event.MouseButton1Up] = function()
                 self:setState({componentState = ComponentState.Hover})
             end
 
-            self.props[Roact.Event.Activated] = self.props[Roact.Event.Activated] or function()
+            propsState[Roact.Event.Activated] = propsState[Roact.Event.Activated] or function()
                 self:runCallbacks(self.callbacks.onTap)
             end
         end
 
-        self.props[Roact.Event.MouseEnter] = function()
+        propsState[Roact.Event.MouseEnter] = function()
             self:setState({componentState = ComponentState.Hover})
         end
 
-        self.props[Roact.Event.MouseLeave] = function()
+        propsState[Roact.Event.MouseLeave] = function()
             self:setState({componentState = ComponentState.None})
         end            
 
-        self:setState({componentState = ComponentState.None})
+        for propertyName : string in pairs(props) do
+            self:createMotor(propertyName)
+        end
+
+        self:setState({
+            componentState = ComponentState.None,
+            props = propsState
+        })
     end
 
     function newComponent:playAnimation(animations : {}, customTransition : Transition.Transition)
@@ -138,23 +149,37 @@ RoactMotion.createElement = function(
     end
 
     function newComponent:createMotor(propertyName : string, shouldReset : boolean)
-        local initialValue : any = props[propertyName]
-        local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(props[propertyName] or Instance.new(component)[propertyName])
+        if self.motorReference[propertyName] then
+            return
+        end
+
+        local propsState = self.state.props or self.propsState
+        local initialValue : any = propsState[propertyName] or Instance.new(component)[propertyName]
+        
+        local binding : Roact.Binding, updateBinding : (newValue: any) -> () = Roact.createBinding(initialValue)
         local motor = Motor.new(binding, updateBinding)
 
         self.motorReference[propertyName] = motor
 
-        props[propertyName] = binding:map(function(value)
+        propsState[propertyName] = binding:map(function(value)
             return value
         end)
 
         if not shouldReset then
+            self:setState({
+                props = propsState
+            })
+
             return
         end
 
         table.insert(self.callbacks._default, function()
             motor:Set(initialValue, transition)
         end)
+
+        self:setState({
+            props = propsState
+        })
     end
 
     function newComponent:runCallbacks(callbacks : {()->nil})
@@ -197,7 +222,9 @@ RoactMotion.createElement = function(
     end
 
     function newComponent:render()
-        return Roact.createElement(self.component, self.props)
+        local propsState = self.state.props
+        print(propsState)
+        return Roact.createElement(self.component, propsState)
     end
 
     return Roact.createElement(newComponent)

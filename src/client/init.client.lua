@@ -21,23 +21,27 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
         AnchorPoint = Vector2.new(0.5, 0.5),
         Position = UDim2.fromScale(0.5, 0.5),
         Size = UDim2.fromOffset(100, 50),
-        Text = "Current count : 1"
+        Text = "Current count : 1",
+        BackgroundTransparency = 0,
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     }, 
     {},
     {
         [RoactMotion.Event.onTap] = function()
             controller:play({
-                BackgroundColor3 = Color3.fromRGB(166, 20, 20)
+                BackgroundTransparency = 1
             }, transition)
         end,
  
         [RoactMotion.Event.whileHover] = {
             Size = UDim2.fromOffset(300, 60),
             Position = UDim2.fromScale(0.5, 0.475),
-            --BackgroundColor3 = Color3.fromRGB(166, 20, 20)
+            AnchorPoint = Vector2.new(0.5, 0),
+            BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            --BackgroundTransparency = 0.5
         },
         [RoactMotion.Event.whileTap] = {
-            Size = UDim2.fromOffset(200, 50)
+            Size = UDim2.fromOffset(200, 50),
         },
 
         transition = transition,
