@@ -69,7 +69,6 @@ function Motor:Update(deltaTime : number) : nil
     local targetAlpha : number = math.clamp(self.currentT - self.previousT, 0, 1)
     local alpha : number = TweenService:GetValue(targetAlpha, self.transition.easingStyle, self.transition.easingDirection)
     local newValue : any = nil
-
     local currentTarget : any = nil
     local tlimit : number = nil
 
@@ -86,15 +85,12 @@ function Motor:Update(deltaTime : number) : nil
             self.reversed = false
             self.repeatCount += 1
         else
-            print("Reverse")
             self.reversed = true
         end
             
         if self.transition.repeatCount == self.repeatCount then
-            print("Finished")
             self:Stop()
         elseif not self.reversed then
-            print("Reset")
             self:Reset()
         end
 
@@ -110,7 +106,7 @@ function Motor:Update(deltaTime : number) : nil
     end
     
     self.currentT = math.clamp(self.currentT, 0, tlimit)
-
+ 
     local currentKey : number = math.floor(self.currentT)
 
     if not self.reversed then
@@ -118,14 +114,12 @@ function Motor:Update(deltaTime : number) : nil
         currentKey > self.previousT and
         self.previousT + 1 < tlimit 
         then
-            print("REACHED N")
             self:ReachedKeyPoint(currentKey, currentTarget, alpha)        
         end
     else
         if currentKey < self.previousT and
-        self.previousT - 1 > 0
+        self.previousT > 0
         then
-            print("REACHED V")
             self:ReachedKeyPoint(currentKey, currentTarget, alpha)
         end
     end
@@ -134,6 +128,7 @@ end
 function Motor:ReachedKeyPoint(keyPoint : number, currentTarget : any, alpha : number)
     self.previousT = keyPoint
     self.transition.reachedKeypoint:Fire(self.previousT)
+    print("Keypoint:", keyPoint, "Current target:", currentTarget)
     self.startValue = self:_GetLerped(currentTarget, alpha)
 end
 
