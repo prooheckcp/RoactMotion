@@ -18,6 +18,7 @@ Motor.repeatCount = nil :: number
 Motor.reversed = nil :: boolean
 Motor.customValue = nil :: any
 Motor.initialValue = nil :: any
+Motor.cachedStartValues = nil :: {any}
 
 local function lerp(a : number, b : number, t : number) : number
     return a + (b - a) * t
@@ -34,7 +35,7 @@ end
 
 function Motor:_GetTargetLimit() : (number, number)
     if typeof(self.targetValue) == "table" then
-        local targetIndex : number = math.min(1 + math.floor(self.currentT), #self.targetValue)
+        local targetIndex : number = math.clamp(1 + math.floor(self.currentT), 1, #self.targetValue)
         return self.targetValue[targetIndex], #self.targetValue
     else
         return self.targetValue, 1
@@ -109,6 +110,8 @@ function Motor:Update(deltaTime : number) : nil
  
     local currentKey : number = math.floor(self.currentT)
 
+    print(self.previousT, ":", self.startValue)
+
     if not self.reversed then
         if 
         currentKey > self.previousT and
@@ -128,8 +131,17 @@ end
 function Motor:ReachedKeyPoint(keyPoint : number, currentTarget : any, alpha : number)
     self.previousT = keyPoint
     self.transition.reachedKeypoint:Fire(self.previousT)
-    print("Keypoint:", keyPoint, "Current target:", currentTarget)
-    self.startValue = self:_GetLerped(currentTarget, alpha)
+    
+    if self.reversed then
+        self.startValue = self.cachedStartValues[keyPoint]
+    else
+        self.startValue = self:_GetLerped(currentTarget, alpha)
+    end
+    
+
+    if not self.reversed then
+        self.cachedStartValues[keyPoint] = self.startValue
+    end
 end
 
 function Motor:Stop()
@@ -142,6 +154,7 @@ function Motor:Reset()
     self.currentT = 0
     self.previousT = 0
     self.startValue = self.initialValue
+    self.cachedStartValues = {}
 end
 
 function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number, customValue : any) : nil
@@ -156,6 +169,7 @@ function Motor:Set(targetValue : any, transition : Transition.Transition, custom
     self.initialValue = self.startValue
     self.customTargetValue = customTargetValue
     self.customValue = customValue
+    self.cachedStartValues[1] = self.startValue
 
     if not self.renderStepped then
         self.renderStepped = RunService.RenderStepped:Connect(function(deltaTime : number)
