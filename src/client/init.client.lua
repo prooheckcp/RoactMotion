@@ -12,7 +12,7 @@ transition.repeatCount = 1
 transition.reverses = true
 
 local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Size = {UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.2, 0.2)}
+    Size = {UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.3, 0.3), UDim2.fromScale(0.1, 0.3)}
 }, transition)
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {

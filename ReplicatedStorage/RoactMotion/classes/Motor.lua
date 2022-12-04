@@ -78,24 +78,24 @@ function Motor:Update(deltaTime : number) : nil
 
     self.setBinding(newValue)
     
-    if self.currentT == tlimit or (self.reversed and self.currentT == 0) then
- 
+    if (not self.reversed and self.currentT == tlimit) or (self.reversed and self.currentT == 0) then
         if 
         not self.transition.reverses or
         (self.reversed and self.currentT == 0)
         then
+            self.reversed = false
             self.repeatCount += 1
+        else
+            print("Reverse")
+            self.reversed = true
         end
             
-
         if self.transition.repeatCount == self.repeatCount then
-            print("leave")
+            print("Finished")
             self:Stop()
-            
-        else
+        elseif not self.reversed then
             print("Reset")
             self:Reset()
-
         end
 
         return
@@ -111,20 +111,30 @@ function Motor:Update(deltaTime : number) : nil
     
     self.currentT = math.clamp(self.currentT, 0, tlimit)
 
-    if not self.reversed then
-        local currentKey : number = math.floor(self.currentT)
+    local currentKey : number = math.floor(self.currentT)
 
+    if not self.reversed then
         if 
         currentKey > self.previousT and
         self.previousT + 1 < tlimit 
         then
-            self.previousT = currentKey
-            self.transition.reachedKeypoint:Fire(self.previousT)
-            self.startValue = self:_GetLerped(currentTarget, alpha)            
+            print("REACHED N")
+            self:ReachedKeyPoint(currentKey, currentTarget, alpha)        
         end
     else
-
+        if currentKey < self.previousT and
+        self.previousT - 1 > 0
+        then
+            print("REACHED V")
+            self:ReachedKeyPoint(currentKey, currentTarget, alpha)
+        end
     end
+end
+
+function Motor:ReachedKeyPoint(keyPoint : number, currentTarget : any, alpha : number)
+    self.previousT = keyPoint
+    self.transition.reachedKeypoint:Fire(self.previousT)
+    self.startValue = self:_GetLerped(currentTarget, alpha)
 end
 
 function Motor:Stop()
