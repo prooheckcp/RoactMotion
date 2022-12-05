@@ -52,7 +52,7 @@ Roact.mount(Roact.createElement("ScreenGui", {}, {
 Wow! So little changes and we already have a button expanding whenever we hover it! However the animation looks awfully slow... But no worries, the same way you can change the TweenInfo in TweenService so can you in RoactMotion! All you need to do is create a transition object and feed it into the element. Let's see how to do that...
 
 ```luau
-local transition : Roact.Transition = RoactMotion.Transition.new()
+local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.2
 ```
 There's multiple properties that you can modify from the transition such as:
@@ -69,7 +69,7 @@ There's multiple properties that you can modify from the transition such as:
 For now let's just reduce the duration to 0.1... So now that we have the transition object how do we feed it into the UI object? Simple! Just pass it as the transition in the animation object!
 
 ```luau
-local transition : Roact.Transition = RoactMotion.Transition.new()
+local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.1
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {
@@ -101,7 +101,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Roact = require(ReplicatedStorage.Packages.roact) --Use whatever path you have for your Roact
 local RoactMotion = require(ReplicatedStorage.RoactMotion)(Roact) --Replace ReplicatedStorage.RoactMotion with whatever path you need
 
-local transition : Roact.Transition = RoactMotion.Transition.new()
+local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.2
 
 Roact.mount(Roact.createElement("ScreenGui", {}, {

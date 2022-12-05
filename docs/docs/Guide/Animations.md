@@ -8,10 +8,10 @@ Wow, we've already learned a lot so far! But right now you probably still have s
 First let's make a new animation object...
 
 ```luau
-local transition : Roact.Transition = RoactMotion.Transition.new()
+local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.2
 
-local animation : Roact.Animation = RoactMotion.Animation.new({
+local animation : RoactMotion.Animation = RoactMotion.Animation.new({
 	Position = UDim2.fromScale(0.2 ,0.2)	
 }, transition)
 ```
@@ -35,10 +35,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Roact = require(ReplicatedStorage.Packages.roact) --Use whatever path you have for your Roact
 local RoactMotion = require(ReplicatedStorage.RoactMotion)(Roact) --Replace ReplicatedStorage.RoactMotion with whatever path you need
 
-local transition : Roact.Transition = RoactMotion.Transition.new()
+local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.2
 
-local animation : Roact.Animation = RoactMotion.Animation.new({
+local animation : RoactMotion.Animation = RoactMotion.Animation.new({
 	Position = UDim2.fromScale(0.2 ,0.2)	
 }, transition)
 

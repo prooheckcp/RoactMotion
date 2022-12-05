@@ -9,10 +9,10 @@ Wow we've already been thru a lot together! But now you're probably thinking, wh
 Don't worry, RoactMotion has a million way of doing whatever you wish with it! Making chained animations is as simple as quite literally passing an array instead of a target value. Remember the last example with the cube? Let's make that animation a bit more complex now!
 
 ```luau
-local transition : Roact.Transition = RoactMotion.Transition.new()
+local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.5
 
-local animation : Roact.Animation = RoactMotion.Animation.new({
+local animation : RoactMotion.Animation = RoactMotion.Animation.new({
 	Position = {UDim2.fromScale(0.2 ,0.2), UDim2.fromScale(0.2, 0.8), UDim2.fromScale(0.8, 0.8), UDim2.fromScale(0.8, 0.2)}
 }, transition)
 ```
@@ -48,10 +48,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Roact = require(ReplicatedStorage.Packages.roact) --Use whatever path you have for your Roact
 local RoactMotion = require(ReplicatedStorage.RoactMotion)(Roact) --Replace ReplicatedStorage.RoactMotion with whatever path you need
 
-local transition : Roact.Transition = RoactMotion.Transition.new()
+local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 0.5
 
-local animation : Roact.Animation = RoactMotion.Animation.new({
+local animation : RoactMotion.Animation = RoactMotion.Animation.new({
 	Position = {UDim2.fromScale(0.2 ,0.2), UDim2.fromScale(0.2, 0.8), UDim2.fromScale(0.8, 0.8), UDim2.fromScale(0.8, 0.2)}
 }, transition):andThen(function()
 	print("Hi mom!")
