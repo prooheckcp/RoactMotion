@@ -7,16 +7,23 @@ sidebar_position: 2
 
 :::caution
 
-**ProQuest** is 100% dependant on two other libraries. Without these ProQuest won't function.
-
-They are only used internally so you don't need to know how do they function, you will however need to download them and drop them intro a place such as **ReplicatedStorage**, or anywhere you wish.
-
-Dependencies:
-
-[ProNet](https://prooheckcp.github.io/ProNet/docs/Installation)
-
-[ProStore3](https://prooheckcp.github.io/ProStore3/docs/Installation)
+This library is still new and will suffer a lot of tiny changes in the upcoming future. It's highly recommended you install it via Wally to keep up with the updates.
 
 :::
 
-Links to ProQuest, this will depend on where Dubit wants to store it -
+## Wally
+
+https://wally.run/package/prooheckcp/roactmotion
+```
+roactmotion = "prooheckcp/roactmotion@0.1.2"
+```
+
+## GitHub
+Latest version in the main branch at ReplicatedStorage/RoactMotion
+
+https://github.com/prooheckcp/RoactMotion
+
+## Roblox Studio
+Move the ModuleScript into your desired directory
+
+https://www.roblox.com/library/11753296431/RoactMotion-V-0-1-2
