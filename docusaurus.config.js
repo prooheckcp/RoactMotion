@@ -5,7 +5,7 @@
 const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 //Some constants
-const REPO_NAME = "ProQuest"
+const REPO_NAME = "RoactMotion"
 const PROFILE_NAME = "prooheckcp"
 
 /** @type {import('@docusaurus/types').Config} */
@@ -15,15 +15,15 @@ const config = {
   ],
 
   title: REPO_NAME,
-  tagline: 'A robust quest system',
-  url: 'https://prooheckcp.github.io', //Change to website link
+  tagline: 'Animate your UI today!',
+  url: 'https://prooheckcp.github.io',
   baseUrl: `/${REPO_NAME}/`,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
   organizationName: PROFILE_NAME,
-  projectName: REPO_NAME, // Change to the repo name
+  projectName: REPO_NAME,
   trailingSlash: false,
 
   i18n: {
