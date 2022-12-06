@@ -11,7 +11,7 @@ const PROFILE_NAME = "prooheckcp"
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   plugins: [
-    require.resolve('docusaurus-lunr-search'),
+
   ],
 
   title: REPO_NAME,
@@ -20,7 +20,7 @@ const config = {
   baseUrl: `/${REPO_NAME}/`,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/RoactMotionIcon.ico',
 
   organizationName: PROFILE_NAME,
   projectName: REPO_NAME,
@@ -63,7 +63,7 @@ const config = {
         hideOnScroll: true,
         logo: {
           alt: 'My Site Logo',
-          src: 'img/PageLogo.png', //Path to the logo on the search bar
+          src: 'img/RoactMotionIcon.png', //Path to the logo on the search bar
         },
         items: [
           {
@@ -82,11 +82,7 @@ const config = {
             href: `https://github.com/${PROFILE_NAME}/${REPO_NAME}`,
             label: 'GitHub',
             position: 'right',
-          },
-          {
-            type: 'search',
-            position: 'right',
-          },          
+          },         
         ],
       },
       footer: {
