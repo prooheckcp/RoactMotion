@@ -5,7 +5,7 @@ title: Animation⭐
 ---
 
 ## Summary
-The ``Animation`` is a class that contains information about how we want our Roact element to be animated. You specify the target values you'll be wanting and the transition that it should use for these.
+The [``Animation``](Animation) is a class that contains information about how we want our Roact element to be animated. You specify the target values you'll be wanting and the transition that it should use for these.
 
 ```luau
 local transition : RoactMotion.Transition = RoactMotion.Transition.new()
