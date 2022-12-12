@@ -53,6 +53,30 @@ customValue : ``any``  | Pass any kind of custom value as the second argument to
 |``void`` |
 |-|
 
+
+
+### andThen
+Similar to .completed it gets called when the animation finishes playing, specially useful to chain animations.
+
+```luau
+local animation : RoactMotion.Animation = RoactMotion.Animation.new({
+    Position = UDim2.fromScale(0.2 ,0.2)    
+}):andThen(function()
+    print("I got called at the end!")
+end)
+}}
+```
+#### Parameters
+
+targetValue : ``function`` | Function to be called at the end of the animation
+-|-
+#### Returns
+|``void`` |
+|-|
+
+
+
+
 ## Events
 
 ### completed
