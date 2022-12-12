@@ -20,11 +20,17 @@ local animation : RoactMotion.Animation = RoactMotion.Animation.new({
 
 |new(animationObject : ``{}``, transition : ``RoactMotion.Transition?``)|
 |:----|
-|Returns a new ``RoactMotion.Animation`` form the given animation object and transition|
+|Returns a new [``RoactMotion.Animation``](Animation) form the given animation object and transition|
+
+## Properties
+
+|||
+|:---|:---|
+|transition : [RoactMotion.Transition](Transition)|Specifies the transition settings on which the object should act upon|
 
 ## Methods
 
-## play
+### play
 Plays the animation you wish. Can be called from anywhere.
 
 ```luau
@@ -38,13 +44,32 @@ RoactMotion.createElement("TextButton", {
         end,
 }}
 ```
-### Parameters
+#### Parameters
 
 targetValue : ``number`` | In case any of the target values uses a function the first argument will tween towards this value
 -|-
 customValue : ``any``  | Pass any kind of custom value as the second argument to function mapping
-### Returns
+#### Returns
 |``void`` |
 |-|
 
-## andThen
+## Events
+
+### completed
+
+Fired when the animation completes playing.
+
+**Code Samples**
+```luau
+local animation : RoactMotion.Animation = RoactMotion.Animation.new({
+    Position = UDim2.fromScale(0.2 ,0.2)    
+})
+
+animation.completed:Connect(function()
+    print("My animation finished!")
+end)
+
+task.delay(5, function()
+    animation:play()
+end)
+```
