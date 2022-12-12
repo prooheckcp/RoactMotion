@@ -38,10 +38,10 @@ local animation : RoactMotion.Animation = RoactMotion.Animation.new({
     Position = UDim2.fromScale(0.2 ,0.2)    
 })
 
-RoactMotion.createElement("TextButton", {
-        [RoactMotion.Event.onTap] = function()
-            animation:play()
-        end,
+RoactMotion.createElement("TextButton", {}, nil, {
+    [RoactMotion.Event.onTap] = function()
+        animation:play()
+    end,
 }}
 ```
 #### Parameters
