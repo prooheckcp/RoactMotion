@@ -44,78 +44,30 @@ RoactMotion.createElement("TextButton", {
 |:----|
 |Returns a new [``RoactMotion.Controller``](Controller)|
 
-## Properties
-
-|||
-|:---|:---|
-|transition : [RoactMotion.Transition](Transition)|Specifies the transition settings on which the object should act upon|
-
 ## Methods
 
 ### play
-Plays the animation you wish. Can be called from anywhere.
+Plays the animation you wish with the given transition.
 
 ```luau
-local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Position = UDim2.fromScale(0.2 ,0.2)    
-})
+local controller : RoactMotion.Controller = RoactMotion.Controller.new()
 
 RoactMotion.createElement("TextButton", {
-        [RoactMotion.Event.onTap] = function()
-            animation:play()
-        end,
+    Position = UDim2.fromScale(0.5, 0.5),
+}, nil {
+    [RoactMotion.Event.onTap] = function()
+        controller:play({
+            Position = UDim2.fromScale(0.2, 0.2)    
+        }, transition)
+    end,
+    controller = controller
 }}
 ```
 #### Parameters
 
-targetValue : ``number`` | In case any of the target values uses a function the first argument will tween towards this value
+animation : ``animation`` | The animation object with the target values
 -|-
-customValue : ``any``  | Pass any kind of custom value as the second argument to function mapping
+transition : [``RoactMotion.Transition?``](Transition)  | The transition which will be used for this specific animation
 #### Returns
 |``void`` |
 |-|
-
-
-
-### andThen
-Similar to .completed it gets called when the animation finishes playing, specially useful to chain animations.
-
-```luau
-local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Position = UDim2.fromScale(0.2 ,0.2)    
-}):andThen(function()
-    print("I got called at the end!")
-end)
-}}
-```
-#### Parameters
-
-targetValue : ``function`` | Function to be called at the end of the animation
--|-
-#### Returns
-|``void`` |
-|-|
-
-
-
-
-## Events
-
-### completed
-
-Fired when the animation completes playing.
-
-**Code Samples**
-```luau
-local animation : RoactMotion.Animation = RoactMotion.Animation.new({
-    Position = UDim2.fromScale(0.2 ,0.2)    
-})
-
-animation.completed:Connect(function()
-    print("My animation finished!")
-end)
-
-task.delay(5, function()
-    animation:play()
-end)
-```
