@@ -2,6 +2,7 @@ local Transition = require(script.Parent.Transition)
 
 local Controller = {}
 Controller.__index = Controller
+Controller.type = "Controller" :: string
 
 function Controller.new()
     local self = setmetatable({}, Controller)

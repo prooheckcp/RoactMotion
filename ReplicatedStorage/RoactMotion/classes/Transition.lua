@@ -10,6 +10,7 @@ Transition.reverses = nil :: boolean
 Transition.repeatCount = nil :: number
 Transition.reachedKeypoint = nil :: RBXScriptSignal
 Transition.completed = nil :: RBXScriptSignal
+Transition.type = "Transition" :: string
 
 function Transition.new()
     local self = setmetatable({}, Transition)

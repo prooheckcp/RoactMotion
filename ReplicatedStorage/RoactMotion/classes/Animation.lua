@@ -6,6 +6,7 @@ Animation.__index = Animation
 Animation.animation = nil
 Animation.transition = nil :: Transition.Transition
 Animation.completed = nil :: Event.Event
+Animation.type = "Animation" :: string
 
 function Animation.new(animation : {}, transition : Transition.Transition?)
     local self = setmetatable({}, Animation)

@@ -1,4 +1,22 @@
 {
-    "name": "roactmotion",
-    "tree": {"$path":"ReplicatedStorage/RoactMotion"}
+  "name": "RoactMotion",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$path": "ReplicatedStorage",
+      "Packages":{
+        "$className": "Folder",
+        "$path": "Packages"
+      }
+    },
+
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    }
+  }
 }

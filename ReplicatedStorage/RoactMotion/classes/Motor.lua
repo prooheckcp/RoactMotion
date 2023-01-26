@@ -18,6 +18,7 @@ Motor.repeatCount = nil :: number
 Motor.reversed = nil :: boolean
 Motor.customValue = nil :: any
 Motor.initialValue = nil :: any
+Motor.animation = nil :: any
 Motor.cachedStartValues = nil :: {any}
 
 local function lerp(a : number, b : number, t : number) : number
@@ -98,7 +99,15 @@ function Motor:Update(deltaTime : number) : nil
         return
     end
 
-    local movingAmount : number = deltaTime/self.transition.duration
+    local duration : number = 0
+
+    if typeof(self.transition.duration) == "number" then
+        duration = self.transition.duration
+    elseif typeof(self.transition.duration) == "table" then
+        duration = self.transition.duration[math.min(math.floor(self.currentT) + 1, #self.transition.duration)]
+    end
+
+    local movingAmount : number = deltaTime/duration
 
     if self.reversed then
         self.currentT -= movingAmount
@@ -149,7 +158,11 @@ end
 function Motor:Stop()
     self.transition.completed:Fire()
     self.renderStepped:Disconnect()
-    self.renderStepped = nil    
+    self.renderStepped = nil
+
+    if self.animation then
+        self.animation.completed:Fire()
+    end
 end
 
 function Motor:Reset()
@@ -159,12 +172,13 @@ function Motor:Reset()
     self.cachedStartValues = {}
 end
 
-function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number, customValue : any) : nil
+function Motor:Set(targetValue : any, transition : Transition.Transition, customTargetValue : number, customValue : any, animation : any) : nil
     if transition.delay > 0 then task.wait(transition.delay) end
 
     self.repeatCount = 0
     self.reversed = false
     self:Reset()
+    self.animation = animation
     self.targetValue = targetValue
     self.transition = transition
     self.startValue = self.binding:getValue()
