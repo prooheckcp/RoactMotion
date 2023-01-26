@@ -4,10 +4,5 @@ registry = "test"
 
 [[package]]
 name = "prooheckcp/roactmotion"
-version = "0.1.0"
-dependencies = [["roact", "roblox/roact@1.4.4"]]
-
-[[package]]
-name = "roblox/roact"
-version = "1.4.4"
-dependencies = []
+version = "0.1.4"
+dependencies = [["roactmotion", "prooheckcp/roactmotion@0.1.4"]]
