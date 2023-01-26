@@ -15,7 +15,7 @@ This library is still new and will suffer a lot of tiny changes in the upcoming 
 
 https://wally.run/package/prooheckcp/roactmotion
 ```
-roactmotion = "prooheckcp/roactmotion@0.1.2"
+roactmotion = "prooheckcp/roactmotion@0.1.5""
 ```
 
 ## GitHub
