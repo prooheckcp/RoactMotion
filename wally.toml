@@ -1,10 +1,16 @@
 [package]
 name = "prooheckcp/roactmotion"
 description = "A simple library inspired by Framer Motion and Flipper that allows you to easily animate Roact UI. It supports events such as hovering and pressing on buttons. Developed by @prooheckcp. You can read it's documentation at: https://github.com/prooheckcp/RoactMotion"
-version = "0.1.5"
+version = "0.1.8"
 license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 authors = ["Prooheckcp"]
-include = ["default.project.json", "src", "wally.lock", "wally.toml"]
 exclude = ["**"]
+include = [
+    "default.project.json", 
+    "src", 
+    "wally.lock", 
+    "wally.toml",
+    "src/*"
+]
