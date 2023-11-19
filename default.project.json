@@ -1,4 +1,4 @@
 {
     "name": "roactmotion",
-    "tree": {"$path":"src"}
+    "tree": {"$path":"roactmotion"}
 }
