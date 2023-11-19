@@ -1,8 +1,8 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Roact = require(ReplicatedStorage.Packages.roact) --Use whatever path you have for your Roact
-local RoactMotion = require(ReplicatedStorage.RoactMotion)(Roact) --Replace ReplicatedStorage.RoactMotion with whatever path you need
+local Roact = require(ReplicatedStorage.Packages.Roact) --Use whatever path you have for your Roact
+local RoactMotion = require(ReplicatedStorage.Packages.RoactMotion)(Roact) --Replace ReplicatedStorage.RoactMotion with whatever path you need
 
 local transition : RoactMotion.Transition = RoactMotion.Transition.new()
 transition.duration = 1
