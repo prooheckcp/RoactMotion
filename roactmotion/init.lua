@@ -8,13 +8,13 @@ local Controller = require(script.classes.Controller)
 
 local RoactMotion = {}
 
-local newComponent : Roact.Component = nil
+local newComponent = nil
 
 local function createNewComponent()
-    newComponent = Roact.PureComponent:extend("AnimatedComponent")
+	newComponent = Roact.Component:extend("AnimatedComponent")
 
     function newComponent:init(initialProps)
-        local transition : Transition.Transition = initialProps.animations.transition or Transition.new()
+        local transition = initialProps.animations.transition or Transition.new()
 
         self.transition = transition
         self.component = initialProps.component
@@ -42,7 +42,7 @@ local function createNewComponent()
 
         self.motorReference = motorReference
 
-        for eventName : string | Event.Event, targetValue : any in pairs(self.animations) do
+        for eventName : string | Event.Event, targetValue : any in self.animations do
             if not self.callbacks[eventName] then
                 if eventName == "animate" then
                     self:loadAnimate(targetValue, motorReference)
@@ -209,8 +209,10 @@ local function createNewComponent()
 
     function newComponent:render()
         local propsState = self.state.props
-
-        return Roact.createElement(self.component, propsState)
+		local children = self.props.children
+	
+		propsState[Roact.Children] = nil
+        return Roact.createElement(self.component, propsState, children)
     end
 end
 
@@ -223,10 +225,11 @@ RoactMotion.createElement = function(
     if animations then
         assert(typeof(animations) == "table", "The fourth argument must be an animation instructions map!")
     end
-
+	
     animations = animations or {}
     local transition : Transition.Transition = animations.transition or Transition.new()
-
+    animations.transition = transition
+	
     return Roact.createElement(newComponent, {
         component = component,
         props = props,

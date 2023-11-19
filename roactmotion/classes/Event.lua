@@ -3,12 +3,12 @@
 ]]
 
 export type Connection = {Disconnect : (self : Connection) -> nil}
-export type Callback = {(callback : any) -> any}
+export type Callback = (args: any) -> any
 
 local Event : Event = {}
 Event.__index = Event
-Event.attachedCallbacks = nil :: {Callback}
-Event.attachedMiddleware = nil :: {Callback}
+Event.attachedCallbacks = nil :: {Callback}?
+Event.attachedMiddleware = nil :: {Callback}?
 
 function Event.new() : Event
     local self = setmetatable({}, Event)
@@ -19,17 +19,17 @@ function Event.new() : Event
     return self
 end
 
-function Event:AddMiddleWare(callback : Callback)
+function Event:AddMiddleWare(callback: Callback)
     table.insert(self.attachedMiddleware, callback)
 end
 
-function Event:Fire(...) : nil
+function Event:Fire(...): ()
     for _, callback : Callback in pairs(self.attachedCallbacks) do
         pcall(callback, ...)
     end
 end
 
-function Event:Connect(callback : Callback) : Connection
+function Event:Connect(callback : Callback): Connection
     if typeof(callback) ~= "function" then
         return error("Callbacks must be of type: function!", 3)
     end
@@ -41,10 +41,10 @@ function Event:Connect(callback : Callback) : Connection
     local attachedCallbacks : {Callback} = self.attachedCallbacks
     table.insert(attachedCallbacks, callback)
 
-    local connection : Connection = {}
+    local connection: Connection = {}
 
     function connection:Disconnect()
-        for index, _callback in pairs(attachedCallbacks) do
+        for index, _callback in attachedCallbacks do
             if _callback == callback then
                 table.remove(attachedCallbacks, index)
                 break
