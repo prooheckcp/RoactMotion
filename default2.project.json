@@ -4,10 +4,13 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-      "$path": "ReplicatedStorage",
+      "$ignoreUnknownInstances": false,
       "Packages":{
         "$className": "Folder",
-        "$path": "Packages"
+        "$path": "Packages",
+        "RoactMotion":{
+          "$path": "roactmotion"
+        }        
       }
     },
 
